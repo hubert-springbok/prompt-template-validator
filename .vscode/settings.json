@@ -1,0 +1,7 @@
+{
+    "ruff.fixAll": false,
+    "editor.codeActionsOnSave": {
+       "source.fixAll": "never" ,
+       "source.organizeImports": "explicit"
+    }
+}
