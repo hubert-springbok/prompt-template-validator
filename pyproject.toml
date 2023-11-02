@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "prompt-template-validator"
+version = "0.1.0"
+description = ""
+authors = ["Hubert Bereś <hubert@springbok.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+streamlit = "^1.28.0"
+jinja2 = "^3.1.2"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.1.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
