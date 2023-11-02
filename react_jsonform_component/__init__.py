@@ -28,7 +28,7 @@ if not _RELEASE:
         # Pass `url` here to tell Streamlit that the component will be served
         # by the local dev server that you run via `npm run start`.
         # (This is useful while your component is in development.)
-        url="http://localhost:3001",
+        url="http://localhost:3000",
     )
 else:
     # When we're distributing a production version of the component, we'll
@@ -44,7 +44,7 @@ else:
 # `declare_component` and call it done. The wrapper allows us to customize
 # our component's API: we can pre-process its input args, post-process its
 # output value, and add a docstring for users.
-def my_component(name: str, schema: dict, key: str | None=None):
+def jsonform_component(name: str, schema: dict, key: str | None=None):
     """Create a new form components based on a json schema
     """
     # Call through to our private component function. Arguments we pass here
