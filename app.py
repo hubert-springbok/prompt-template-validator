@@ -1,7 +1,3 @@
-"""
-Streamlit Cheat Sheet
-"""
-
 import streamlit as st
 
 from react_jsonform_component import jsonform_component
@@ -9,7 +5,7 @@ from react_jsonform_component import jsonform_component
 # Initial page config
 
 st.set_page_config(
-     page_title='Streamlit cheat sheet',
+     page_title='Prompt template validator',
      layout="wide",
      initial_sidebar_state="expanded",
 )

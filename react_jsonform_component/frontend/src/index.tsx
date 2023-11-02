@@ -1,11 +1,12 @@
 import React from "react"
-import ReactDOM from "react-dom"
+import { createRoot } from "react-dom/client"
 import JsonformComponent from "./App"
 
-ReactDOM.render(
+const root = createRoot(document.getElementById("root")!)
+root.render(
   <React.StrictMode>
-    <h1>Hello World</h1>
+    <div>
     <JsonformComponent />
-  </React.StrictMode>,
-  document.getElementById("root")
+    </div>
+  </React.StrictMode>
 )

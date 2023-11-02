@@ -15,12 +15,12 @@ interface State {
  * automatically when your component should be re-rendered.
  */
 class JsonformComponent extends StreamlitComponentBase<State> {
-  public state = { numClicks: 0, isFocused: false }
-
-  public render = (): ReactNode => {
+    public state = { numClicks: 0, isFocused: false }
+    public render = (): ReactNode => {
     // Arguments that are passed to the plugin in Python are accessible
     // via `this.props.args`. Here, we access the "name" arg.
     const name = this.props.args["name"]
+    // useEffect(() => Streamlit.setFrameHeight())
 
     // Streamlit sends us a theme object via props that we can use to ensure
     // that our component has visuals that match the active theme in a
