@@ -3,6 +3,7 @@ import { RJSFSchema, UiSchema } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
 import { ReactNode } from "react";
 import {
+  Streamlit,
   StreamlitComponentBase,
   withStreamlitConnection,
 } from "streamlit-component-lib";
@@ -38,6 +39,11 @@ class JsonformComponent extends StreamlitComponentBase {
   };
   private _submitFormData = (formData: any): void => {
     console.log({ formData });
+    Streamlit.setComponentValue({
+      errors: formData.errors,
+      formData: formData.formData,
+      schemaValidationErrors: formData.schemaValidationErrors,
+    });
   };
 }
 
