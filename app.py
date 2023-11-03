@@ -1,10 +1,10 @@
-import json
-
 import streamlit as st
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import ValidationError
+from ruamel.yaml import YAML
 
-from react_jsonform_component import pydantic_jsonform, raw_jsonform
+from react_jsonform_component import SchemaError, raw_jsonform
 
+yaml = YAML(typ="safe")
 # Initial page config
 
 st.set_page_config(
@@ -18,11 +18,6 @@ def main():
     cs_body()
 
 
-class Form(BaseModel):
-    age: int = Field(..., gt=0, lt=115)
-    name: str = Field(default="", max_length=20)
-
-
 def cs_body():
     st.header("Streamlit app to preview prompt templates")
     schema_file = st.file_uploader(
@@ -33,12 +28,15 @@ def cs_body():
     )
     if not schema_file:
         st.write("Please upload a schema file to get started")
-        pydantic_jsonform(schema=Form, key="pydantic_form")
         return
-    schema = json.load(schema_file)
+    schema = yaml.load(schema_file)
 
     try:
         data = raw_jsonform(schema=schema, key="form")
+    except SchemaError as e:
+        st.error("Please upload a valid jsonschema file!")
+        st.error(e)
+        data = None
     except ValidationError as e:
         st.error(e)
         data = None

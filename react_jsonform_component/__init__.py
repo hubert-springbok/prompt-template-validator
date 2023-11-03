@@ -3,8 +3,10 @@ from pathlib import Path
 from typing import TypeVar
 
 import streamlit.components.v1 as components
+from jsonschema import Draft202012Validator, SchemaError
 from pydantic import BaseModel, ValidationError
 
+__all__ = ["raw_jsonform", "pydantic_jsonform", "SchemaError", "ValidationError"]
 COMPONENT_NAME = "react_jsonform_component"
 
 if bool(os.environ.get("USE_DEBUG_SERVER", False)):
@@ -47,7 +49,10 @@ def pydantic_jsonform(
 def raw_jsonform(
     schema: dict, ui_schema: dict = {}, key: str | None = None
 ) -> None | dict:
-    """Render a web form using a json schema."""
+    """Render a web form using a json schema.
+    Raises a SchemaError if the schema is invalid.
+    """
+    Draft202012Validator.check_schema(schema)
     component_value = _component_func(
         schema=schema,
         uiSchema=ui_schema,
@@ -56,10 +61,11 @@ def raw_jsonform(
         height=None,
     )
     if component_value is None:
-        print("Not submitted yet!")
         return None
 
     data = FormData.model_validate(component_value)
     if data.errors:
         raise ValidationError.from_exception_data("Invalid form data", data.errors)
+    if data.schemaValidationErrors:
+        raise SchemaError("Invalid schema", cause=data.schemaValidationErrors)
     return data.formData
