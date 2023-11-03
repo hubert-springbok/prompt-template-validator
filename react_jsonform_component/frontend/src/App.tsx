@@ -8,19 +8,28 @@ import {
 } from "streamlit-component-lib";
 
 interface Args {
-  schema: any;
-  uiSchema: any;
+  schema: Record<string, any>;
+  uiSchema: Record<string, any>;
+  userData: Record<string, any> | null;
 }
 class JsonformComponent extends StreamlitComponentBase {
-  public state = { formData: null };
+  public state = { formData: null as Record<string, any> | null };
   public render = (): ReactNode => {
-    const { schema, uiSchema }: Args = this.props.args;
+    const { schema, uiSchema, userData }: Args = this.props.args;
+
+    console.log(this.state.formData);
+
+    if (userData) this.state.formData = userData;
     return (
       <Form
         schema={schema}
         validator={validator}
         uiSchema={uiSchema}
         onSubmit={this._submitFormData}
+        onChange={(e) => {
+          this.state.formData = e.formData;
+        }}
+        formData={this.state.formData}
       />
     );
   };

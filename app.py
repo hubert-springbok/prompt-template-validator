@@ -29,21 +29,19 @@ def body():
         return
 
     try:
-        data = raw_jsonform(schema=schema, key="form")
+        form_data = raw_jsonform(schema=schema, user_data=user_data, key="form")
     except SchemaError as e:
         st.error("Please upload a valid jsonschema file!")
         st.error(e)
-        data = None
+        form_data = None
     except ValidationError as e:
         st.error(e)
-        data = None
+        form_data = None
 
-    if data:
-        st.header("Form data")
-        st.write(dict(data))
-
+    if form_data:
+        st.header("Export your data")
         file_content = io.BytesIO()
-        yaml.dump(data, stream=file_content)
+        yaml.dump(form_data, stream=file_content)
         st.download_button(
             "Download form data as yaml",
             file_name="form_data.yaml",
