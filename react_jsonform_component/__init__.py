@@ -1,6 +1,8 @@
 import os
+from typing import TypeVar
 
 import streamlit.components.v1 as components
+from pydantic import BaseModel, ValidationError
 
 # Create a _RELEASE constant. We'll set this to False while we're developing
 # the component, and True when we're ready to package and distribute it.
@@ -39,22 +41,38 @@ else:
     _component_func = components.declare_component("my_component", path=build_dir)
 
 
+class FormData(BaseModel):
+    errors: list = []
+    formData: dict = {}
+    schemaValidationErrors: list = []
+
+
 # Create a wrapper function for the component. This is an optional
 # best practice - we could simply expose the component function returned by
 # `declare_component` and call it done. The wrapper allows us to customize
 # our component's API: we can pre-process its input args, post-process its
 # output value, and add a docstring for users.
-def jsonform_component(name: str, schema: dict, key: str | None=None):
-    """Create a new form components based on a json schema
-    """
-    # Call through to our private component function. Arguments we pass here
-    # will be sent to the frontend, where they'll be available in an "args"
-    # dictionary.
-    #
-    # "default" is a special argument that specifies the initial return
-    # value of the component before the user has interacted with it.
-    component_value = _component_func(name=name, key=key, default=0, height=None)
+Schema = TypeVar("Schema", bound=BaseModel)
 
-    # We could modify the value returned from the component if we wanted.
-    # There's no need to do this in our simple example - but it's an option.
-    return component_value
+
+def jsonform_component(
+    schema: type[Schema], ui_schema: dict = {}, key: str | None = None
+) -> None | Schema:
+    """Create a new form components based on a json schema"""
+    schema_dict = schema.model_json_schema()
+
+    component_value = _component_func(
+        schema=schema_dict,
+        uiSchema=ui_schema,
+        key=key,
+        default=None,
+        height=None,
+    )
+    if component_value is None:
+        return None
+
+    data = FormData.model_validate(component_value)
+    if data.errors:
+        raise ValidationError.from_exception_data("Invalid form data", data.errors)
+
+    return schema.model_validate(data.formData)

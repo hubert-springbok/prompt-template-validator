@@ -1,5 +1,4 @@
 import Form from "@rjsf/core";
-import { RJSFSchema, UiSchema } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
 import { ReactNode } from "react";
 import {
@@ -8,37 +7,24 @@ import {
   withStreamlitConnection,
 } from "streamlit-component-lib";
 
-const schema: RJSFSchema = {
-  title: "Test form",
-  type: "object",
-  properties: {
-    name: {
-      type: "string",
-    },
-    age: {
-      type: "number",
-    },
-  },
-};
-const uiSchema: UiSchema = {
-  "ui:classNames": "custom-css-class",
-};
-
+interface Args {
+  schema: any;
+  uiSchema: any;
+}
 class JsonformComponent extends StreamlitComponentBase {
-  public state = { numClicks: 0, isFocused: false };
+  public state = { formData: null };
   public render = (): ReactNode => {
-    // const { name } = this.props.args;
+    const { schema, uiSchema }: Args = this.props.args;
     return (
       <Form
         schema={schema}
-        uiSchema={uiSchema}
         validator={validator}
+        uiSchema={uiSchema}
         onSubmit={this._submitFormData}
       />
     );
   };
   private _submitFormData = (formData: any): void => {
-    console.log({ formData });
     Streamlit.setComponentValue({
       errors: formData.errors,
       formData: formData.formData,
