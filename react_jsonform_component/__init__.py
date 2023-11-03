@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import TypeVar
 
@@ -6,8 +7,7 @@ from pydantic import BaseModel, ValidationError
 
 COMPONENT_NAME = "react_jsonform_component"
 
-_RELEASE = False
-if not _RELEASE:
+if bool(os.environ.get("USE_DEBUG_SERVER", False)):
     # Serve the npm server directly to get hot reloading.
     _component_func = components.declare_component(
         COMPONENT_NAME,
@@ -17,6 +17,10 @@ else:
     # Serve static build files
     here = Path(__file__).parent.absolute()
     build_dir = here / "frontend/build"
+    assert (build_dir / "index.html").is_file(), (
+        "Component not built! "
+        "Run `cd react_jsonform_component/frontend && npm run build` first!"
+    )
     _component_func = components.declare_component(COMPONENT_NAME, path=str(build_dir))
 
 

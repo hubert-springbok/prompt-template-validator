@@ -1,7 +1,8 @@
 {
-  "name": "my-jsonforms-app",
+  "name": "react-jsonform-component",
   "version": "0.1.0",
   "private": true,
+  "homepage": "component/react_jsonform_component.react_jsonform_component",
   "dependencies": {
     "@rjsf/core": "^5.13.3",
     "@rjsf/utils": "^5.13.3",

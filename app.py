@@ -3,7 +3,7 @@ import json
 import streamlit as st
 from pydantic import BaseModel, Field, ValidationError
 
-from react_jsonform_component import raw_jsonform
+from react_jsonform_component import pydantic_jsonform, raw_jsonform
 
 # Initial page config
 
@@ -27,14 +27,16 @@ def cs_body():
     st.header("Streamlit app to preview prompt templates")
     schema_file = st.file_uploader(
         "Upload a schema file",
-        key="schema_file_widget",
+        key="schema_file",
         type=["json", "yaml"],
         accept_multiple_files=False,
     )
     if not schema_file:
         st.write("Please upload a schema file to get started")
+        pydantic_jsonform(schema=Form, key="pydantic_form")
         return
     schema = json.load(schema_file)
+
     try:
         data = raw_jsonform(schema=schema, key="form")
     except ValidationError as e:
