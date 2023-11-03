@@ -17,21 +17,16 @@ st.set_page_config(
 
 
 def main():
-    cs_body()
+    body()
 
 
-def cs_body():
+def body():
     st.header("Streamlit app to preview prompt templates")
-    schema_file = st.file_uploader(
-        "Upload a schema file",
-        key="schema_file",
-        type=["json", "yaml"],
-        accept_multiple_files=False,
-    )
-    if not schema_file:
+
+    schema, user_data = file_pickers()
+    if not schema:
         st.write("Please upload a schema file to get started")
         return
-    schema = yaml.load(schema_file)
 
     try:
         data = raw_jsonform(schema=schema, key="form")
@@ -55,6 +50,26 @@ def cs_body():
             key="form_data_download",
             data=file_content,
         )
+
+
+def file_pickers():
+    col1, col2 = st.columns(2)
+
+    schema_file = col1.file_uploader(
+        "Upload a schema file",
+        key="schema_file",
+        type=["json", "yaml"],
+        accept_multiple_files=False,
+    )
+    user_data_file = col2.file_uploader(
+        "Upload your existing data (optional)",
+        key="user_data_file",
+        type=["json", "yaml"],
+        accept_multiple_files=False,
+    )
+    schema = yaml.load(schema_file) if schema_file else None
+    user_data = yaml.load(user_data_file) if user_data_file else None
+    return schema, user_data
 
 
 if __name__ == "__main__":
