@@ -1,39 +1,43 @@
-import React, { ReactNode } from "react";
+import Form from "@rjsf/core";
+import { RJSFSchema, UiSchema } from "@rjsf/utils";
+import validator from "@rjsf/validator-ajv8";
+import { ReactNode } from "react";
 import {
   StreamlitComponentBase,
   withStreamlitConnection,
 } from "streamlit-component-lib";
 
-import Form from "@rjsf/core";
-import { RJSFSchema } from "@rjsf/utils";
-import validator from "@rjsf/validator-ajv8";
-
 const schema: RJSFSchema = {
   title: "Test form",
-  type: "string",
+  type: "object",
+  properties: {
+    name: {
+      type: "string",
+    },
+    age: {
+      type: "number",
+    },
+  },
+};
+const uiSchema: UiSchema = {
+  "ui:classNames": "custom-css-class",
 };
 
 class JsonformComponent extends StreamlitComponentBase {
   public state = { numClicks: 0, isFocused: false };
   public render = (): ReactNode => {
-    const { theme } = this.props;
     // const { name } = this.props.args;
-
-    const style: React.CSSProperties = {};
-
-    // Maintain compatibility with older versions of Streamlit that don't send
-    // a theme object.
-    if (theme) {
-      // Use the theme object to style our button border. Alternatively, the
-      // theme style is defined in CSS vars.
-      const borderStyling = `1px solid ${
-        this.state.isFocused ? theme.primaryColor : "gray"
-      }`;
-      style.border = borderStyling;
-      style.outline = borderStyling;
-    }
-
-    return <Form schema={schema} validator={validator} />;
+    return (
+      <Form
+        schema={schema}
+        uiSchema={uiSchema}
+        validator={validator}
+        onSubmit={this._submitFormData}
+      />
+    );
+  };
+  private _submitFormData = (formData: any): void => {
+    console.log({ formData });
   };
 }
 
