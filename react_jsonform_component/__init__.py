@@ -1,44 +1,26 @@
-import os
+from pathlib import Path
 from typing import TypeVar
 
 import streamlit.components.v1 as components
 from pydantic import BaseModel, ValidationError
 
-# Create a _RELEASE constant. We'll set this to False while we're developing
-# the component, and True when we're ready to package and distribute it.
-# (This is, of course, optional - there are innumerable ways to manage your
-# release process.)
+COMPONENT_NAME = "react_jsonform_component"
+
 _RELEASE = False
-
-# Declare a Streamlit component. `declare_component` returns a function
-# that is used to create instances of the component. We're naming this
-# function "_component_func", with an underscore prefix, because we don't want
-# to expose it directly to users. Instead, we will create a custom wrapper
-# function, below, that will serve as our component's public API.
-
-# It's worth noting that this call to `declare_component` is the
-# *only thing* you need to do to create the binding between Streamlit and
-# your component frontend. Everything else we do in this file is simply a
-# best practice.
-
 if not _RELEASE:
+    # Serve the npm server directly to get hot reloading.
     _component_func = components.declare_component(
-        # We give the component a simple, descriptive name ("my_component"
-        # does not fit this bill, so please choose something better for your
-        # own component :)
-        "react_jsonform_component",
-        # Pass `url` here to tell Streamlit that the component will be served
-        # by the local dev server that you run via `npm run start`.
-        # (This is useful while your component is in development.)
+        COMPONENT_NAME,
         url="http://localhost:3000",
     )
 else:
-    # When we're distributing a production version of the component, we'll
-    # replace the `url` param with `path`, and point it to the component's
-    # build directory:
-    parent_dir = os.path.dirname(os.path.abspath(__file__))
-    build_dir = os.path.join(parent_dir, "frontend/build")
-    _component_func = components.declare_component("my_component", path=build_dir)
+    # Serve static build files
+    here = Path(__file__).parent.absolute()
+    build_dir = here / "frontend/build"
+    _component_func = components.declare_component(COMPONENT_NAME, path=str(build_dir))
+
+
+Schema = TypeVar("Schema", bound=BaseModel)
 
 
 class FormData(BaseModel):
@@ -47,32 +29,33 @@ class FormData(BaseModel):
     schemaValidationErrors: list = []
 
 
-# Create a wrapper function for the component. This is an optional
-# best practice - we could simply expose the component function returned by
-# `declare_component` and call it done. The wrapper allows us to customize
-# our component's API: we can pre-process its input args, post-process its
-# output value, and add a docstring for users.
-Schema = TypeVar("Schema", bound=BaseModel)
-
-
-def jsonform_component(
+def pydantic_jsonform(
     schema: type[Schema], ui_schema: dict = {}, key: str | None = None
 ) -> None | Schema:
-    """Create a new form components based on a json schema"""
+    """Render a web form corresponding to a pydantic model."""
     schema_dict = schema.model_json_schema()
+    data = raw_jsonform(schema_dict, ui_schema, key)
+    if data is None:
+        return None
+    return schema.model_validate(data)
 
+
+def raw_jsonform(
+    schema: dict, ui_schema: dict = {}, key: str | None = None
+) -> None | dict:
+    """Render a web form using a json schema."""
     component_value = _component_func(
-        schema=schema_dict,
+        schema=schema,
         uiSchema=ui_schema,
         key=key,
         default=None,
         height=None,
     )
     if component_value is None:
+        print("Not submitted yet!")
         return None
 
     data = FormData.model_validate(component_value)
     if data.errors:
         raise ValidationError.from_exception_data("Invalid form data", data.errors)
-
-    return schema.model_validate(data.formData)
+    return data.formData

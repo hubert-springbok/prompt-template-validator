@@ -1,7 +1,7 @@
 import streamlit as st
 from pydantic import BaseModel, Field, ValidationError
 
-from react_jsonform_component import jsonform_component
+from react_jsonform_component import pydantic_jsonform
 
 # Initial page config
 
@@ -43,7 +43,7 @@ def cs_body():
     # )
 
     try:
-        data = jsonform_component(schema=Form, key="form")
+        data = pydantic_jsonform(schema=Form, key="form")
     except ValidationError as e:
         st.error(e)
         data = None
