@@ -1,3 +1,5 @@
+import io
+
 import streamlit as st
 from pydantic import ValidationError
 from ruamel.yaml import YAML
@@ -44,6 +46,15 @@ def cs_body():
     if data:
         st.header("Form data")
         st.write(dict(data))
+
+        file_content = io.BytesIO()
+        yaml.dump(data, stream=file_content)
+        st.download_button(
+            "Download form data as yaml",
+            file_name="form_data.yaml",
+            key="form_data_download",
+            data=file_content,
+        )
 
 
 if __name__ == "__main__":
