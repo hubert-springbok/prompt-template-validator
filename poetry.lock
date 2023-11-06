@@ -1230,6 +1230,24 @@ watchdog = {version = ">=2.1.5", markers = "platform_system != \"Darwin\""}
 snowflake = ["snowflake-connector-python (>=2.8.0)", "snowflake-snowpark-python (>=0.9.0)"]
 
 [[package]]
+name = "streamlit-rjsf"
+version = "0.1.0"
+description = "A Streamlit component to render web forms based on jsonschema, using rjsf"
+optional = false
+python-versions = "^3.10"
+files = []
+develop = false
+
+[package.dependencies]
+jsonschema = "^4.19.2"
+pydantic = "^2.4.2"
+streamlit = "^1.28.1"
+
+[package.source]
+type = "directory"
+url = "../streamlit-rjsf"
+
+[[package]]
 name = "tenacity"
 version = "8.2.3"
 description = "Retry code until it succeeds"
@@ -1420,4 +1438,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "4452f00de434d471f67033607068be3542e221616023757c43df79df8df72e40"
+content-hash = "c79a87f0ce4fdb6fc3a6c6c98a047dfbeb2b8eca2dee0f3f7cec51926ad27abf"

@@ -3,11 +3,9 @@ import io
 import streamlit as st
 from pydantic import ValidationError
 from ruamel.yaml import YAML
-
-from react_jsonform_component import SchemaError, raw_jsonform
+from streamlit_rjsf import SchemaError, raw_jsonform
 
 yaml = YAML(typ="safe")
-# Initial page config
 
 st.set_page_config(
     page_title="Prompt template validator",
