@@ -1234,18 +1234,16 @@ name = "streamlit-rjsf"
 version = "0.1.0"
 description = "A Streamlit component to render web forms based on jsonschema, using rjsf"
 optional = false
-python-versions = "^3.10"
-files = []
-develop = false
+python-versions = ">=3.10,<4.0"
+files = [
+    {file = "streamlit_rjsf-0.1.0-py3-none-any.whl", hash = "sha256:3a7be953e99ba149fba6533356bfb054a2714949d75e97b3438ad1dd72adb9bd"},
+    {file = "streamlit_rjsf-0.1.0.tar.gz", hash = "sha256:ddc2b1adb4ffdc4910cdbf60c1b4b9e23b340248a31429f0369a7111188f6834"},
+]
 
 [package.dependencies]
-jsonschema = "^4.19.2"
-pydantic = "^2.4.2"
-streamlit = "^1.28.1"
-
-[package.source]
-type = "directory"
-url = "../streamlit-rjsf"
+jsonschema = ">=4.19.2,<5.0.0"
+pydantic = ">=2.4.2,<3.0.0"
+streamlit = ">=1.28.1,<2.0.0"
 
 [[package]]
 name = "tenacity"
@@ -1438,4 +1436,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "c79a87f0ce4fdb6fc3a6c6c98a047dfbeb2b8eca2dee0f3f7cec51926ad27abf"
+content-hash = "d1bb76f7efc58370fde0fed5c4f662bb6002ad9c24ca7761d17abc5d9e56c49e"
